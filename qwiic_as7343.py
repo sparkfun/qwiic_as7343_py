@@ -1225,7 +1225,7 @@ class QwiicAS7343(object):
         :rtype: bool
         """
         # Check if the A gain is valid
-        if gain < 0 or gain > 31:
+        if gain < self.kAgain0_5 or gain > self.kAgain2048:
             return False
 
         # Read the current cfg1 register

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7343_ex1_basic_readings.py
+# qwiic_as7343_ex2_all_channels.py
 #
 # This example shows how to setup the AS7343 sensor with default settings and
-# print out 4 channels from the sensor (Red, Green, Blue, and NIR).
+# print out all the spectral data from the sensor.
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, May 2024
 #
@@ -39,7 +39,7 @@ import sys
 import time
 
 def runExample():
-	print("\nQwiic AS7343 Example 1 - Basic Readings\n")
+	print("\nQwiic AS7343 Example 2 - All Channels\n")
 
 	# Create instance of device
 	myAS7343 = qwiic_as7343.QwiicAS7343()
@@ -84,10 +84,9 @@ def runExample():
 		myAS7343.set_led_off()
 
 		# Print our comma-separated spectral data
-		print(myAS7343.get_blue(), end=',')
-		print(myAS7343.get_red(), end=',')
-		print(myAS7343.get_green(), end=',')
-		print(myAS7343.get_nir(), end=',\n')
+		for i in range(0, myAS7343.kNumChannels):
+			print(myAS7343.get_data(i), end=',')
+		print()
 
 		time.sleep(0.500) # Wait 500 ms before next reading
 

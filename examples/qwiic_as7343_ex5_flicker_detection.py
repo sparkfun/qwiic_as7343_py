@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7343_ex1_basic_readings.py
+# qwiic_as7343_ex5_flicker_detection.py
 #
-# This example shows how to setup the AS7343 sensor with default settings and
-# print out 4 channels from the sensor (Red, Green, Blue, and NIR).
+# This example shows how to use the Flicker Detection feature of the AS7343 sensor.
+# It sets up the sensor with default settings and prints out the flicker detection
+# results to the serial monitor.
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, May 2024
 #
@@ -39,7 +40,7 @@ import sys
 import time
 
 def runExample():
-	print("\nQwiic AS7343 Example 1 - Basic Readings\n")
+	print("\nQwiic AS7343 Example 5 - Flicker Detection\n")
 
 	# Create instance of device
 	myAS7343 = qwiic_as7343.QwiicAS7343()
@@ -66,30 +67,40 @@ def runExample():
 		return
 	print("AutoSmux set to 18 channels")
 
+	myAS7343.flicker_detection_enable()
+
 	# Enable spectral measurements
 	if not myAS7343.spectral_measurement_enable():
 		print("Failed to enable spectral measurements", file=sys.stderr)
 		return
 	print("Spectral measurements enabled")
 
+	# Turn off the LED for use with flicker detection
+	myAS7343.set_led_off()
+	time.sleep(1) # Wait 1 second for the sensor to stabilize
+
 	while True:
-		myAS7343.set_led_drive(0) # 0 = 4mA
-		myAS7343.set_led_on()
+		fdValid = myAS7343.get_fd_valid_status()
+		fdSaturation = myAS7343.get_fd_saturation_status()
+		fdFrequency = myAS7343.get_fd_frequency()
 
-		time.sleep(0.100) # Wait 100 ms for LED to fully illuminate our target
+		# Check if the measurement is valid
+		if not fdValid:
+			print("Flicker detection measurement is not valid")
+			return
 		
-		# Read the spectral data
-		myAS7343.read_all_spectral_data()
+		# Check if the measurement is saturated
+		if fdSaturation:
+			print("Flicker detection measurement is saturated")
+			return
+		
+		# If the measurement is valid and not saturated, print the frequency
+		if fdFrequency == 0:
+			print("No flicker detected")
+		else:
+			print("Flicker detected at frequency: {} Hz".format(fdFrequency))
 
-		myAS7343.set_led_off()
-
-		# Print our comma-separated spectral data
-		print(myAS7343.get_blue(), end=',')
-		print(myAS7343.get_red(), end=',')
-		print(myAS7343.get_green(), end=',')
-		print(myAS7343.get_nir(), end=',\n')
-
-		time.sleep(0.500) # Wait 500 ms before next reading
+		time.sleep(1) # Wait before the next reading
 
 if __name__ == '__main__':
 	try:

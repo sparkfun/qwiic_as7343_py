@@ -1,9 +1,15 @@
 #!/usr/bin/env python
 #-------------------------------------------------------------------------------
-# qwiic_as7343_ex1_basic_readings.py
+# qwiic_as7343_ex6_sleep.py
 #
-# This example shows how to setup the AS7343 sensor with default settings and
-# print out 4 channels from the sensor (Red, Green, Blue, and NIR).
+#   This example shows how to setup the AS7343 sensor with default settings and
+#   print out all the spectral data from the sensor, putting it to "sleep" inbetween
+#   measurements to save power.
+  
+#   Note, the AS7343 datasheet refers to each mode of operation as Sleep, Idle,
+#   and Active. Although there is no direct control of a power mode, we can turn off
+#   the Measurement and the Power ON bits in the Enable register to put the device
+#     into a low power state (~350uA).
 #-------------------------------------------------------------------------------
 # Written by SparkFun Electronics, May 2024
 #
@@ -38,8 +44,54 @@ import qwiic_as7343
 import sys
 import time
 
+def take_reading(device):
+	# Power on the device
+	device.power_on()
+	print("Device powered on")
+
+	# Set AutoSmux to output all 18 channels
+	if not device.set_auto_smux(device.kAutoSmux18Channels):
+		print("Failed to set AutoSmux", file=sys.stderr)
+		return
+	print("AutoSmux set to 18 channels")
+
+	# Enable spectral measurements
+	if not device.spectral_measurement_enable():
+		print("Failed to enable spectral measurements", file=sys.stderr)
+		return
+	print("Spectral measurements enabled")
+
+	device.set_led_drive(0) # 0 = 4mA
+	device.set_led_on()
+
+	time.sleep(0.100) # Wait 100 ms for LED to fully illuminate our target
+	
+	# Read the spectral data
+	device.read_all_spectral_data()
+
+	device.set_led_off()
+
+	# Print our comma-separated spectral data
+	for i in range(0, device.kNumChannels):
+		print(device.get_data(i), end=',')
+	print()
+
+
+def sleep_device(device):
+	# Disable spectral measurements
+	if not device.spectral_measurement_disable():
+		print("Failed to disable spectral measurements", file=sys.stderr)
+		return
+	print("Spectral measurements disabled")
+
+	# Power off the device
+	if not device.power_off():
+		print("Failed to power off the device", file=sys.stderr)
+		return
+	print("Device powered off")
+
 def runExample():
-	print("\nQwiic AS7343 Example 1 - Basic Readings\n")
+	print("\nQwiic AS7343 Example 6 - Sleep\n")
 
 	# Create instance of device
 	myAS7343 = qwiic_as7343.QwiicAS7343()
@@ -55,42 +107,17 @@ def runExample():
 		print("The device isn't connected to the system. Please check your connection", \
 			file=sys.stderr)
 		return
-	
-	# Power on the device
-	myAS7343.power_on()
-	print("Device powered on")
-
-	# Set AutoSmux to output all 18 channels
-	if not myAS7343.set_auto_smux(myAS7343.kAutoSmux18Channels):
-		print("Failed to set AutoSmux", file=sys.stderr)
-		return
-	print("AutoSmux set to 18 channels")
-
-	# Enable spectral measurements
-	if not myAS7343.spectral_measurement_enable():
-		print("Failed to enable spectral measurements", file=sys.stderr)
-		return
-	print("Spectral measurements enabled")
 
 	while True:
-		myAS7343.set_led_drive(0) # 0 = 4mA
-		myAS7343.set_led_on()
+		# Take a reading
+		take_reading(myAS7343)
 
-		time.sleep(0.100) # Wait 100 ms for LED to fully illuminate our target
+		# Put the device to sleep
+		sleep_device(myAS7343)
+
+		# Wait 5 seconds before taking another reading
+		time.sleep(5.0)
 		
-		# Read the spectral data
-		myAS7343.read_all_spectral_data()
-
-		myAS7343.set_led_off()
-
-		# Print our comma-separated spectral data
-		print(myAS7343.get_blue(), end=',')
-		print(myAS7343.get_red(), end=',')
-		print(myAS7343.get_green(), end=',')
-		print(myAS7343.get_nir(), end=',\n')
-
-		time.sleep(0.500) # Wait 500 ms before next reading
-
 if __name__ == '__main__':
 	try:
 		runExample()
