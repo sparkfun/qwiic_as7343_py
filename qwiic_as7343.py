@@ -585,6 +585,8 @@ class QwiicAS7343(object):
         if self.get_device_id() != self.kDefaultAS7343DeviceID:
             print("Device ID mismatch")
             return False
+        
+        return True
 
     connected = property(is_connected)
 
@@ -653,7 +655,7 @@ class QwiicAS7343(object):
         :rtype: int
         """
         # Read the device ID register
-        return (self.read_register(self.kRegID) & self.kMaskAuxID) >> self.kShiftAuxID
+        return self.read_register(self.kRegID)
     
     def power_on(self, enable=True):
         """
@@ -729,7 +731,7 @@ class QwiicAS7343(object):
 
         # Read the spectral data registers
         for i in range(self.kNumChannels):
-            self.data[i] = (self._i2c.read_word(self.address, self.kRegData0 + (i * 2)))
+            self._data[i] = (self._i2c.read_word(self.address, self.kRegData0 + (i * 2)))
 
     
     def get_data(self, channel):
