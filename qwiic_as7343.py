@@ -33,7 +33,7 @@
 # SOFTWARE.
 #===============================================================================
 
-"""
+"""!
 qwiic_as7343
 ============
 Python module for the [SparkFun Qwiic AS7343](https://www.sparkfun.com/products/TODO)
@@ -541,15 +541,13 @@ class QwiicAS7343(object):
 
 
     def __init__(self, address=None, i2c_driver=None):
-        """
+        """!
         Constructor
 
-        :param address: The I2C address to use for the device
+        @param int, optional address: The I2C address to use for the device
             If not provided, the default address is used
-        :type address: int, optional
-        :param i2c_driver: An existing i2c driver object
+        @param I2CDriver, optional i2c_driver: An existing i2c driver object
             If not provided, a driver object is created
-        :type i2c_driver: I2CDriver, optional
         """
 
         # Use address if provided, otherwise pick the default
@@ -570,11 +568,10 @@ class QwiicAS7343(object):
         self._data = [None] * self.kNumChannels
 
     def is_connected(self):
-        """
+        """!
         Determines if this device is connected
 
-        :return: `True` if connected, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if connected, otherwise `False`
         """
         # Check if connected by seeing if an ACK is received
         if not self._i2c.isDeviceConnected(self.address):
@@ -591,23 +588,21 @@ class QwiicAS7343(object):
     connected = property(is_connected)
 
     def begin(self):
-        """
+        """!
         Initializes this device with default parameters
 
-        :return: Returns `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** Returns `True` if successful, otherwise `False`
         """
         # Confirm device is connected before doing anything
         return self.is_connected()
 
     def set_register_bank(self, bank):
-        """
+        """!
         Sets the register bank for the device
 
-        :param bank: The register bank to set
-        :type bank: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int bank: The register bank to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the bank is valid
         if bank not in [self.kRegBank0, self.kRegBank1]:
@@ -627,13 +622,12 @@ class QwiicAS7343(object):
         return True
 
     def read_register(self, register):
-        """
+        """!
         Reads a single byte from the specified register
 
-        :param register: The register to read from
-        :type register: int
-        :return: The value read from the register
-        :rtype: int
+        @param int register: The register to read from
+
+        @return **int** The value read from the register
         """
         
         # Set the register bank as needed to access the specified register.
@@ -648,23 +642,21 @@ class QwiicAS7343(object):
         return self._i2c.read_byte(self.address, register)
     
     def get_device_id(self):
-        """
+        """!
         Gets the device ID of the AS7343
 
-        :return: The device ID
-        :rtype: int
+        @return **int** The device ID
         """
         # Read the device ID register
         return self.read_register(self.kRegID)
     
     def power_on(self, enable=True):
-        """
+        """!
         Powers on the AS7343
 
-        :param enable: `True` to power on, `False` to power off
-        :type enable: bool
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param bool enable: `True` to power on, `False` to power off
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current enable register
         enable_reg = self.read_register(self.kRegEnable)
@@ -680,22 +672,20 @@ class QwiicAS7343(object):
         return True
     
     def power_off(self):
-        """
+        """!
         Powers off the AS7343
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         return self.power_on(False)
     
     def spectral_measurement_enable(self, enable=True):
-        """
+        """!
         Enables or disables spectral measurement
 
-        :param enable: `True` to enable, `False` to disable
-        :type enable: bool
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param bool enable: `True` to enable, `False` to disable
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current enable register
         enable_reg = self.read_register(self.kRegEnable)
@@ -711,19 +701,18 @@ class QwiicAS7343(object):
         return True
     
     def spectral_measurement_disable(self):
-        """
+        """!
         Disables spectral measurement
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         return self.spectral_measurement_enable(False)
     
     def read_all_spectral_data(self):
-        """
+        """!
         Reads all spectral data from the AS7343
 
-        :return: None
+        @return None
         """
         
         # Set the register bank to bank 0 to access the data registers
@@ -735,13 +724,12 @@ class QwiicAS7343(object):
 
     
     def get_data(self, channel):
-        """
+        """!
         Gets the data for a specific channel
 
-        :param channel: The channel to get data from
-        :type channel: int
-        :return: The data for the specified channel or `None` if invalid
-        :rtype: int
+        @param int channel: The channel to get data from
+
+        @return **int** The data for the specified channel or `None` if invalid
         """
         # Check if the channel is valid
         if channel < 0 or channel >= self.kNumChannels:
@@ -751,13 +739,12 @@ class QwiicAS7343(object):
         return self._data[channel]
         
     def set_auto_smux(self, auto_smux):
-        """
+        """!
         Sets the automatic SMUX mode
 
-        :param auto_smux: The automatic SMUX mode to set
-        :type auto_smux: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int auto_smux: The automatic SMUX mode to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the auto SMUX mode is valid
         if auto_smux not in [self.kAutoSmux6Channels, self.kAutoSmux12Channels, self.kAutoSmux18Channels]:
@@ -777,13 +764,12 @@ class QwiicAS7343(object):
         return True
     
     def set_led_on(self, led_on = True):
-        """
+        """!
         Sets the LED state
 
-        :param led_on: `True` to turn on the LED, `False` to turn it off
-        :type led_on: bool
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param bool led_on: `True` to turn on the LED, `False` to turn it off
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current LED register
         led_reg = self.read_register(self.kRegLed)
@@ -799,22 +785,20 @@ class QwiicAS7343(object):
         return True
     
     def set_led_off(self):
-        """
+        """!
         Turns off the LED
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         return self.set_led_on(False)
     
     def set_led_drive(self, drive):
-        """
+        """!
         Sets the LED drive current
 
-        :param drive: The LED drive current to set
-        :type drive: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int drive: The LED drive current to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the drive current is valid
         if drive < 0 or drive > 127:
@@ -832,50 +816,45 @@ class QwiicAS7343(object):
         return True
     
     def get_red(self):
-        """
+        """!
         Gets the red channel data
 
-        :return: The red channel data
-        :rtype: int
+        @return **int** The red channel data
         """
         return self.get_data(self.kChRedF7690nm)
     
     def get_green(self):
-        """
+        """!
         Gets the green channel data
 
-        :return: The green channel data
-        :rtype: int
+        @return **int** The green channel data
         """
         return self.get_data(self.kChGreenF5550nm)
     
     def get_blue(self):
-        """
+        """!
         Gets the blue channel data
 
-        :return: The blue channel data
-        :rtype: int
+        @return **int** The blue channel data
         """
         return self.get_data(self.kChBlueFz450nm)
     
     def get_nir(self):
-        """
+        """!
         Gets the NIR channel data
 
-        :return: The NIR channel data
-        :rtype: int
+        @return **int** The NIR channel data
         """
         return self.get_data(self.kChNir855nm)
     
     # TODO: Check endianness for these write_words
     def set_spectral_int_threshold_high(self, spThH):
-        """
+        """!
         Sets the spectral intensity threshold high value
 
-        :param spThH: The spectral intensity threshold high value
-        :type spThH: 16-bit positive int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param 16-bit positive int spThH: The spectral intensity threshold high value
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the spectral intensity threshold high value is valid
         if spThH < 0 or spThH > 0xFFFF:
@@ -886,13 +865,12 @@ class QwiicAS7343(object):
         return True
     
     def set_spectral_int_threshold_low(self, spThL):
-        """
+        """!
         Sets the spectral intensity threshold low value
 
-        :param spThL: The spectral intensity threshold low value
-        :type spThL: 16-bit positive int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param 16-bit positive int spThL: The spectral intensity threshold low value
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the spectral intensity threshold low value is valid
         if spThL < 0 or spThL > 0xFFFF:
@@ -903,13 +881,12 @@ class QwiicAS7343(object):
         return True
     
     def spectral_int_enable(self, enable=True):
-        """
+        """!
         Enables or disables spectral intensity measurement
 
-        :param enable: `True` to enable, `False` to disable
-        :type enable: bool
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param bool enable: `True` to enable, `False` to disable
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current cfg20 register
         intEnab = self.read_register(self.kRegIntEnab)
@@ -925,22 +902,20 @@ class QwiicAS7343(object):
         return True
     
     def spectral_int_disable(self):
-        """
+        """!
         Disables spectral intensity measurement
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         return self.spectral_int_enable(False)
     
     def set_spectral_threshold_channel(self, channel):
-        """
+        """!
         Sets the spectral threshold channel
 
-        :param channel: The spectral threshold channel to set
-        :type channel: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int channel: The spectral threshold channel to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the spectral threshold channel is valid
         if channel not in [self.kSpectralThresholdChannel0, self.kSpectralThresholdChannel1,
@@ -962,11 +937,10 @@ class QwiicAS7343(object):
         return True
 
     def get_system_interrupt_status(self):
-        """
+        """!
         Gets the system interrupt status
 
-        :return: The system interrupt status
-        :rtype: bool
+        @return **bool** The system interrupt status
         """
         # Read the status register
         status = self.read_register(self.kRegStatus)
@@ -975,11 +949,10 @@ class QwiicAS7343(object):
         return (status & self.kMaskStatusSint) == self.kMaskStatusSint
     
     def get_spectral_channel_interrupt_status(self):
-        """
+        """!
         Gets the spectral channel interrupt status
 
-        :return: The spectral channel interrupt status
-        :rtype: int
+        @return **int** The spectral channel interrupt status
         """
         # Read the status register
         status = self.read_register(self.kRegStatus)
@@ -988,11 +961,10 @@ class QwiicAS7343(object):
         return (status & self.kMaskStatusAint) == self.kMaskStatusAint
     
     def get_spectral_interrupt_high_status(self):
-        """
+        """!
         Gets the spectral interrupt high status
 
-        :return: The spectral interrupt high status
-        :rtype: int
+        @return **int** The spectral interrupt high status
         """
         # Read the status3 register
         status3 = self.read_register(self.kRegStatus3)
@@ -1001,11 +973,10 @@ class QwiicAS7343(object):
         return (status3 & self.kMaskStatus3IntSpH) == self.kMaskStatus3IntSpH
     
     def get_spectral_trigger_error_status(self):
-        """
+        """!
         Gets the spectral trigger error status
 
-        :return: The spectral trigger error status
-        :rtype: int
+        @return **int** The spectral trigger error status
         """
         # Read the status4 register
         status4 = self.read_register(self.kRegStatus4)
@@ -1014,13 +985,12 @@ class QwiicAS7343(object):
         return (status4 & self.kMaskStatus4SpTrig) == self.kMaskStatus4SpTrig
     
     def set_wait_time(self, wait_time):
-        """
+        """!
         Sets the wait time for the AS7343
 
-        :param wait_time: The wait time to set
-        :type wait_time: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int wait_time: The wait time to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the wait time is valid
         if wait_time < 0 or wait_time > 255:
@@ -1031,23 +1001,21 @@ class QwiicAS7343(object):
         return True
     
     def get_wait_time(self):
-        """
+        """!
         Gets the wait time for the AS7343
 
-        :return: The wait time
-        :rtype: int
+        @return **int** The wait time
         """
         # Read the wait time register
         return self.read_register(self.kRegWTime)
     
     def wait_time_enable(self, enable=True):
-        """
+        """!
         Enables or disables the wait time
 
-        :param enable: `True` to enable, `False` to disable
-        :type enable: bool
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param bool enable: `True` to enable, `False` to disable
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current enable register
         enable_reg = self.read_register(self.kRegEnable)
@@ -1063,20 +1031,18 @@ class QwiicAS7343(object):
         return True
     
     def wait_time_disable(self):
-        """
+        """!
         Disables the wait time
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         return self.wait_time_enable(False)
     
     def get_spectral_valid_status(self):
-        """
+        """!
         Gets the spectral valid status
 
-        :return: The spectral valid status
-        :rtype: int
+        @return **int** The spectral valid status
         """
         # Read the status2 register
         status2 = self.read_register(self.kRegStatus2)
@@ -1085,23 +1051,21 @@ class QwiicAS7343(object):
         return (status2 & self.kMaskStatus2Avalid) == self.kMaskStatus2Avalid
     
     def read_int_enable_reg(self):
-        """
+        """!
         Reads the interrupt enable register
 
-        :return: The interrupt enable register value
-        :rtype: int
+        @return **int** The interrupt enable register value
         """
         # Read the interrupt enable register
         return self.read_register(self.kRegIntEnab)
     
     def set_gpio_mode(self, mode):
-        """
+        """!
         Sets the GPIO mode
 
-        :param mode: The GPIO mode to set
-        :type mode: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int mode: The GPIO mode to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the GPIO mode is valid
         if mode not in [self.kGpioModeInput, self.kGpioModeOutput]:
@@ -1121,11 +1085,10 @@ class QwiicAS7343(object):
         return True
     
     def get_gpio_input_status(self):
-        """
+        """!
         Gets the GPIO input status
 
-        :return: The GPIO input status
-        :rtype: int
+        @return **int** The GPIO input status
         """
         # Read the GPIO register
         gpio_reg = self.read_register(self.kRegGpio)
@@ -1134,13 +1097,12 @@ class QwiicAS7343(object):
         return (gpio_reg & self.kMaskGpioIn) == self.kMaskGpioIn
     
     def set_gpio_output(self, output):
-        """
+        """!
         Sets the GPIO output
 
-        :param output: The GPIO output to set
-        :type output: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int output: The GPIO output to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the GPIO output is valid
         if output not in [self.kGpioOutputLow, self.kGpioOutputHigh]:
@@ -1158,11 +1120,10 @@ class QwiicAS7343(object):
         return True
 
     def reset(self):
-        """
+        """!
         Resets the AS7343
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current control register
         control_reg = self.read_register(self.kRegControl)
@@ -1175,13 +1136,12 @@ class QwiicAS7343(object):
         return True 
 
     def set_spectral_int_persistence(self, persistence):
-        """
+        """!
         Sets the spectral intensity persistence
 
-        :param persistence: The spectral intensity persistence to set
-        :type persistence: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int persistence: The spectral intensity persistence to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the spectral intensity persistence is valid
         if persistence < 0 or persistence > 0x0F:
@@ -1199,11 +1159,10 @@ class QwiicAS7343(object):
         return True
     
     def clear_spectral_channel_interrupt(self):
-        """
+        """!
         Clears the spectral channel interrupt
 
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Read the current status register
         status_reg = self.read_register(self.kRegStatus)
@@ -1216,13 +1175,12 @@ class QwiicAS7343(object):
         return True
 
     def set_a_gain(self, gain):
-        """
+        """!
         Sets the A gain
 
-        :param gain: The A gain to set
-        :type gain: int
-        :return: `True` if successful, otherwise `False`
-        :rtype: bool
+        @param int gain: The A gain to set
+
+        @return **bool** `True` if successful, otherwise `False`
         """
         # Check if the A gain is valid
         if gain < self.kAgain0_5 or gain > self.kAgain2048:
@@ -1240,11 +1198,10 @@ class QwiicAS7343(object):
         return True
     
     def flicker_detection_enable(self, enable=True):
-        """
+        """!
         Enables or disables flicker detection
 
-        :param enable: `True` to enable, `False` to disable
-        :type enable: bool
+        @param bool enable: `True` to enable, `False` to disable
         """
         # Read the current enable register
         enable_reg = self.read_register(self.kRegEnable)
@@ -1259,17 +1216,16 @@ class QwiicAS7343(object):
         self._i2c.write_byte(self.address, self.kRegEnable, enable_reg)
     
     def flicker_detection_disable(self):
-        """
+        """!
         Disables flicker detection
         """
         return self.flicker_detection_enable(False)
     
     def get_fd_valid_status(self):
-        """
+        """!
         Gets the flicker detection valid status
 
-        :return: The flicker detection valid status
-        :rtype: bool
+        @return **bool** The flicker detection valid status
         """
         # Read the fd status register
         fd_status = self.read_register(self.kRegFdStatus)
@@ -1278,11 +1234,10 @@ class QwiicAS7343(object):
         return (fd_status & self.kMaskFdStatusFdMeasValid) == self.kMaskFdStatusFdMeasValid
     
     def get_fd_saturation_status(self):
-        """
+        """!
         Gets the flicker detection saturation status
 
-        :return: The flicker detection saturation status
-        :rtype: bool
+        @return **bool** The flicker detection saturation status
         """
         # Read the fd status register
         fd_status = self.read_register(self.kRegFdStatus)
@@ -1291,11 +1246,10 @@ class QwiicAS7343(object):
         return (fd_status & self.kMaskFdStatusFdSaturation) == self.kMaskFdStatusFdSaturation
     
     def get_fd_frequency(self):
-        """
+        """!
         Gets the flicker detection frequency
 
-        :return: The flicker detection frequency
-        :rtype: int
+        @return **int** The flicker detection frequency
         """
         # Read the fd status register
         fd_status = self.read_register(self.kRegFdStatus)
