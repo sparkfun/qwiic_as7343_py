@@ -4,7 +4,7 @@
 
 ![PyPi Version](https://img.shields.io/pypi/v/sparkfun_qwiic_as7343)
 ![GitHub issues](https://img.shields.io/github/issues/sparkfun/qwiic_as7343_py)
-![License](https://img.shields.io/github/license/sparkfun/qwiic_as7343_py)
+![License](https://img.shields.io/github/license/sparkfun/Qwiic_AS7343_Py)
 ![X](https://img.shields.io/twitter/follow/sparkfun)
 [![API](https://img.shields.io/badge/API%20Reference-blue)](https://docs.sparkfun.com/qwiic_as7343_py/classqwiic__as7343_1_1_qwiic_a_s7343.html)
 
