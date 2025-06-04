@@ -31,7 +31,7 @@ New to qwiic? Take a look at the entire [SparkFun qwiic ecosystem](https://www.s
 
 This Python package supports the following SparkFun qwiic products on Python, MicroPython and Circuit python. 
 
-* [SparkFun Multi-Spectral Sensor Sensor - AS7343](https://www.sparkfun.com/products/TODO)
+* [SparkFun Multi-Spectral Sensor Sensor - AS7343](https://www.sparkfun.com/products/23220)
 
 ### Supported Platforms
 
